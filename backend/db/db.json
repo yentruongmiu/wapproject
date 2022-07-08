@@ -1,0 +1,34 @@
+{
+  "users": [{
+    "id": 1,
+    "username": "user1",
+    "password": "1234"
+  }, {
+    "id": 2,
+    "username": "user2",
+    "password": "abcd"
+  }],
+  "products": [{
+    "id": 1,
+    "name": "Node.js",
+    "price": 9.99,
+    "image": "/resources/images/p1.jpg",
+    "quantity": 7
+  }, {
+    "id": 2,
+    "name": "React",
+    "price": 19.99,
+    "image": "/resources/images/p2.jpg",
+    "quantity": 5
+  }, {
+    "id": 3,
+    "name": "Angular",
+    "price": 29.99,
+    "image": "/resources/images/p3.jpg",
+    "quantity": 3
+  }],
+  "carts": {
+    "user1": [],
+    "user2": []
+  }
+}
