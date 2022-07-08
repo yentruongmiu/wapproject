@@ -12,19 +12,19 @@
     "id": 1,
     "name": "Node.js",
     "price": 9.99,
-    "image": "/resources/images/p1.jpg",
+    "image": "/resources/images/nodejs.png",
     "quantity": 7
   }, {
     "id": 2,
     "name": "React",
     "price": 19.99,
-    "image": "/resources/images/p2.jpg",
+    "image": "/resources/images/reactjs.png",
     "quantity": 5
   }, {
     "id": 3,
     "name": "Angular",
     "price": 29.99,
-    "image": "/resources/images/p3.jpg",
+    "image": "/resources/images/angular.png",
     "quantity": 3
   }],
   "carts": {
