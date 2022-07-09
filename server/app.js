@@ -2,13 +2,17 @@ const express = require('express');
 const cors = require('cors');
 
 const productRoutes = require('./routes/product');
+const cartRoutes = require('./routes/cart');
+const userRoutes = require('./routes/user');
 
 const app = express();
 const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+app.use(userRoutes);
 app.use(productRoutes);
+app.use(cartRoutes);
 
 
 app.use((req, res, next) => {
@@ -16,6 +20,7 @@ app.use((req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
+  console.log(err);
     if (err.message === 'Not Found') {
         res.status(404).json({ error: err.message });
     } else {

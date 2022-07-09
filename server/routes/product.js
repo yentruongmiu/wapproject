@@ -11,8 +11,10 @@ router.get(`${prefix}/:id`, productController.getProductById);
 
 router.put(`${prefix}/:id`, productController.update);
 
-router.put(`${prefix}/:id/:quantity`, productController.updateQuantityById);
+router.put(`${prefix}/:id/:quantity`, productController.updateProductQuantityById);
 
-router.get(`${prefix}/:id/validate/:quantity`, productController.validateQuantityById);
+router.get(`${prefix}/:id/validate/:quantity`, productController.validateProductQuantityById);
+
+router.post(`${prefix}`, productController.save);
 
 module.exports = router;

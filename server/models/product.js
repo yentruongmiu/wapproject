@@ -22,7 +22,7 @@ class Product {
       products.splice(index, 1, this);
       return this;
     } else {
-      throw new Error("Not Found");
+      return { error: `Not found product ${this.id}` };
     }
   }
   
@@ -30,17 +30,17 @@ class Product {
     return products;
   }
 
-  static getProductById(prodId) {
+  static getById(prodId) {
     const index = products.findIndex(p => p.id == prodId);
     
     if (index >= 0) {
       return products[index];
     } else {
-      throw new Error('Not Found');
+      return { error: `Not found product ${prodId}` };
     }
   }
 
-  static updateProductQuantityById(prodId, quantity) {
+  static updateQuantityById(prodId, quantity) {
     const index = products.findIndex(p => p.id == prodId);
     if (index >= 0) {
       const updatedProd = products[index];
@@ -48,17 +48,17 @@ class Product {
       products.splice(index, 1, updatedProd);
       return updatedProd;
     } else {
-      throw new Error('Not Found');
+      return { error: `Not found product ${prodId}` };
     }
   }
 
-  static validateProductQuantityById(prodId, quantity) {
+  static validateQuantityById(prodId, quantity) {
     const index = products.findIndex(p => p.id == prodId);
     if (index >= 0) {
       const selectedProd = products[index];
       return selectedProd.quantity >= parseInt(quantity) ? true : false;
     } else {
-      throw new Error('Not Found');
+      return { error: `Not found product ${prodId}` };
     }
   }
 }
