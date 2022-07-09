@@ -26,9 +26,5 @@
     "price": 29.99,
     "image": "/resources/images/angular.png",
     "quantity": 3
-  }],
-  "carts": {
-    "user1": [],
-    "user2": []
-  }
+  }]
 }

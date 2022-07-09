@@ -1,8 +1,8 @@
-let users = [];
+let users = require('../db/users.json') || [];
 
 class User {
-  constructor(id, username, password) {
-    this.id = id;
+  constructor(username, password) {
+    this.id = users.length + 1;
     this.username = username;
     this.password = password;
   }
@@ -12,5 +12,4 @@ class User {
   }
 }
 
-module.exports = { User };
-//using: {User} = require('user');
+module.exports = User;
