@@ -13,14 +13,18 @@ class Cart {
 
   static addItemByUser(username, prodId) {
     const idx = carts.findIndex(cart => cart.user === username);
+    let cart;
     if (idx >= 0) {
-      const uCart = carts[idx];
-      uCart.items.push(prodId);
-      carts.splice(idx, 1, uCart);
+      cart = carts[idx];
+      cart.items.push(prodId);
+      carts.splice(idx, 1, cart);
     } else {
       //new cart
-      const cart = new Cart(username, [prodId]);
+      cart = new Cart(username, [prodId]);
       carts.push(cart);
     }
+    return cart;
   }
 }
+
+module.exports = Cart;
