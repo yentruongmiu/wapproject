@@ -19,5 +19,6 @@ exports.updateQuantityById = (req, res, next) => {
 }
 //use get for this case
 exports.validateQuantityById = (req, res, next) => {
-  res.status(200).text(Product.validateProductQuantityById(req.params.id, req.params.quantity));
+  const result = Product.validateProductQuantityById(req.params.id, req.params.quantity);
+  res.status(200).json({isValidate: result});
 }

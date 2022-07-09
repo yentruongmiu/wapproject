@@ -56,7 +56,7 @@ class Product {
     const index = products.findIndex(p => p.id == prodId);
     if (index >= 0) {
       const selectedProd = products[index];
-      return selectedProd.quantity >= quantity ? 1 : 0;
+      return selectedProd.quantity >= parseInt(quantity) ? true : false;
     } else {
       throw new Error('Not Found');
     }
