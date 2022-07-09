@@ -2,7 +2,7 @@ const express = require('express');
 
 const productController = require('../controllers/productController');
 
-const router = express.Router;
+const router = express.Router();
 const prefix = '/products';
 
 router.get(`${prefix}`, productController.getProducts);

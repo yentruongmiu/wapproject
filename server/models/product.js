@@ -44,7 +44,7 @@ class Product {
     const index = products.findIndex(p => p.id == prodId);
     if (index >= 0) {
       const updatedProd = products[index];
-      updatedProd.quantity = quantity;
+      updatedProd.quantity = parseInt(quantity);
       products.splice(index, 1, updatedProd);
       return updatedProd;
     } else {
