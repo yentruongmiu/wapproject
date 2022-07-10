@@ -25,21 +25,21 @@ async function renderUserCart() {
     const cartDiv = document.createElement('div');
     cartDiv.id = 'cart';
     const pTitle = document.createElement('p');
+    pTitle.innerHTML = 'Your shopping cart';
+    cartDiv.appendChild(pTitle);
 
     if (cart.items.length == 0) {
-      pTitle.style.textTransform = 'initial';
-      pTitle.innerHTML = 'There is no item in your shopping cart!';
-      cartDiv.appendChild(pTitle);
+      const pInfo = document.createElement('p');
+      pInfo.style.textTransform = 'initial';
+      pInfo.innerHTML = 'There is no item in your shopping cart!';
+      cartDiv.appendChild(pInfo);
     } else {
-      pTitle.innerHTML = 'Your shopping cart';
-      cartDiv.appendChild(pTitle);
-
       const grid = document.createElement('div');
-      grid.className = 'grid';
+      grid.classList = 'grid';
       grid.id = 'cart-grid';
 
       const rowHead = document.createElement('div');
-      rowHead.className = 'row';
+      rowHead.classList = 'row';
       rowHead.innerHTML = `
         <div class="head cell">Name</div>
         <div class="head cell">Price</div>
@@ -50,31 +50,43 @@ async function renderUserCart() {
       let total = 0;
       cart.items.forEach(item => {
         const row = document.createElement('div');
-        row.className = 'row';
+        row.classList = 'row';
         row.id = 'itemid-' + item.id;
 
         const divName = document.createElement('div');
-        divName.className = 'cell';
+        divName.classList = 'cell itemName';
         divName.innerHTML = item.name;
         row.appendChild(divName);
 
         const divPrice = document.createElement('div');
-        divPrice.className = 'cell number unitPrice';
+        divPrice.classList = 'cell number unitPrice';
         divPrice.innerHTML = item.price;
         row.appendChild(divPrice);
 
         const divTotal = document.createElement('div');
-        divTotal.className = 'cell number totalPrice';
+        divTotal.classList = 'cell number totalPrice';
         const totalProductPrice = parseFloat(item.price) * parseInt(item.quantity);
         divTotal.innerHTML = totalProductPrice;
         total += totalProductPrice;
         row.appendChild(divTotal);
 
         const divQtt = document.createElement('div');
-        divQtt.className = 'cell center';
+        divQtt.classList = 'cell center';
         const spanMinus = document.createElement('span');
         spanMinus.title = 'Decrease';
         
+        spanMinus.addEventListener('click', function (evt) {
+          /*const input = $(el).parent().find("input");
+          let val = parseInt(input.val());
+          if (val > 0) {
+            val -= 1;
+            input.val(val);
+            //recalculate total price
+            const price = parseFloat($(el).parent().parent().find(".unitPrice").text());
+            calcTotalPrice(price, "-");
+            $(el).parent().parent().find(".totalPrice").text(calcItemTotalPrice(price, val));
+          }*/
+        });
         //onclick process
 
         spanMinus.innerHTML = '- ';
@@ -82,12 +94,31 @@ async function renderUserCart() {
 
         const inputMin = document.createElement('input');
         inputMin.type = 'number';
-        inputMin.value = 1;
+        inputMin.min = 0;
+        inputMin.classList = 'qtt';
+        const linkedProd = document.querySelector(`#pid-${item.id}`);
+        const prodStock = linkedProd.querySelector(`.stock`).innerHTML;
+        inputMin.max = prodStock;
+        inputMin.value = item.quantity;
         divQtt.appendChild(inputMin);
 
         const spanPlus = document.createElement('span');
         spanPlus.title = 'Increase';
         
+        spanPlus.addEventListener('click', function (evt) {
+          /*
+          const input = $(el).parent().find("input");
+          let val = parseInt(input.val());
+          if (val < 10) {
+            val += 1;
+            input.val(val);
+            //recalculate total price
+            const price = parseFloat($(el).parent().parent().find(".unitPrice").text());
+            calcTotalPrice(price, "+");
+            $(el).parent().parent().find(".totalPrice").text(calcItemTotalPrice(price, val));
+          }
+          */
+        })
         //onclick
 
         spanPlus.innerHTML = ' +';
@@ -98,7 +129,7 @@ async function renderUserCart() {
       });
 
       const rowTotal = document.createElement('div');
-      rowTotal.className = 'row';
+      rowTotal.classList = 'row';
       rowTotal.innerHTML = `
         <div class="cell-total"></div>
         <div class="cell-total"></div>
@@ -109,11 +140,11 @@ async function renderUserCart() {
       cartDiv.appendChild(grid);
 
       const divCtrl = document.createElement('div');
-      divCtrl.className = 'control';
+      divCtrl.classList = 'control';
       const divBtn = document.createElement('div');
-      divBtn.className = 'btn';
+      divBtn.classList = 'btn';
       const btn = document.createElement('button');
-      btn.className = 'button';
+      btn.classList = 'button';
       btn.innerHTML = 'Place order';
       divBtn.appendChild(btn);
       divCtrl.appendChild(divBtn);
@@ -142,11 +173,11 @@ async function renderProducts() {
     prodDiv.appendChild(pTitle);
 
     const grid = document.createElement('div');
-    grid.className = 'grid';
+    grid.classList = 'grid';
     grid.id = 'product-grid';
 
     const rowHead = document.createElement('div');
-    rowHead.className = 'row';
+    rowHead.classList = 'row';
     rowHead.innerHTML = `
       <div class="head cell">Name</div>
       <div class="head cell">Price</div>
@@ -158,33 +189,33 @@ async function renderProducts() {
 
     products.forEach(prod => {
       const row = document.createElement('div');
-      row.className = 'row';
+      row.classList = 'row';
       row.id = 'pid-' + prod.id;
       
       const divName = document.createElement('div');
-      divName.className = 'cell';
+      divName.classList = 'cell proName';
       divName.innerHTML = prod.name;
       row.appendChild(divName);
 
       const divPrice = document.createElement('div');
-      divPrice.className = 'cell number';
+      divPrice.classList = 'cell number price';
       divPrice.innerHTML = prod.price;
       row.appendChild(divPrice);
 
       const divImg = document.createElement('div');
-      divImg.className = 'cell';
+      divImg.classList = 'cell';
       divImg.innerHTML = `<img src="${host}/images/${prod.image}" alt="${prod.name}" class="product-img" />`;
       row.appendChild(divImg);
 
       const divQtt = document.createElement('div');
-      divQtt.className = 'cell number';
+      divQtt.classList = 'cell number stock';
       divQtt.innerHTML = prod.quantity;
       row.appendChild(divQtt);
 
       const divAct = document.createElement('div');
-      divAct.className = 'cell';
+      divAct.classList = 'cell';
       const icon = document.createElement('i')
-      icon.className = 'fas fa-shopping-cart';
+      icon.classList = 'fas fa-shopping-cart';
       icon.title = 'Add to cart';
 
       //action of icon
@@ -217,15 +248,15 @@ function authorizedChecking() {
       if (obj && obj.error) {
         //show login form
         console.log('error authen')
-        document.getElementById('loginForm').className = 'login';
-        document.getElementById('welcome').className = 'login hide';
+        document.getElementById('loginForm').classList = 'login';
+        document.getElementById('welcome').classList = 'login hide';
         //show blank body
         renderWelcomeStore();
       } else {
         //show welcome form
-        document.getElementById('loginForm').className = 'login hide';
+        document.getElementById('loginForm').classList = 'login hide';
         document.getElementById('loggedUser').innerHTML = obj.username;
-        document.getElementById('welcome').className = 'login';
+        document.getElementById('welcome').classList = 'login';
         //show product list and shopping cart
 
         renderProducts();
@@ -264,9 +295,9 @@ async function login() {
     } else {
       sessionStorage.setItem('accessToken', res.accessToken);
       
-      document.getElementById('loginForm').className = 'login hide';
+      document.getElementById('loginForm').classList = 'login hide';
       document.getElementById('loggedUser').innerHTML = username;
-      document.getElementById('welcome').className = 'login';
+      document.getElementById('welcome').classList = 'login';
 
       await renderProducts();
       await renderUserCart();
@@ -284,8 +315,8 @@ function logout() {
     .then(obj => {
       if (obj.success) {
         sessionStorage.clear();
-        document.getElementById('welcome').className = 'login hide';
-        document.getElementById('loginForm').className = 'login';
+        document.getElementById('welcome').classList = 'login hide';
+        document.getElementById('loginForm').classList = 'login';
 
         const divContent = document.getElementById('content');
         renderWelcomeStore();
