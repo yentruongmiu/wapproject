@@ -1,6 +1,6 @@
 [
   {
-    "user": "1", 
+    "userId": "1", 
     "items": [{
       "id": 1,
       "name": "Node.js",
@@ -15,7 +15,7 @@
       "quantity": 1
     }]
   }, {
-    "user": "2",
+    "userId": "2",
     "items": [{
       "id": 2,
       "name": "React",

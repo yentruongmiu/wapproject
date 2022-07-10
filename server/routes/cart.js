@@ -5,14 +5,14 @@ const cartController = require('../controllers/cartController');
 const router = express.Router();
 const userPrefix = '/user';
 const cartPrefix = '/cart';
-// user/:user/cart/doing
+// user/:uId/cart/doing
 
-router.post(`${userPrefix}/:user/${cartPrefix}`, cartController.save);
+router.post(`${userPrefix}/:uId/${cartPrefix}`, cartController.save);
 
-router.get(`${userPrefix}/:user/${cartPrefix}`, cartController.getCart);
+router.get(`${userPrefix}/:uId/${cartPrefix}`, cartController.getCart);
 
-router.put(`${userPrefix}/:user/${cartPrefix}`, cartController.updateCart);
+router.put(`${userPrefix}/:uId/${cartPrefix}`, cartController.updateCart);
 
-router.put(`${userPrefix}/:user/${cartPrefix}/clear`, cartController.clearCart);
+router.put(`${userPrefix}/:uId/${cartPrefix}/clear`, cartController.clearCart);
 
 module.exports = router;
