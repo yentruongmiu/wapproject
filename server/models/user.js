@@ -55,7 +55,7 @@ class User {
         return { error: 'Password does not match.' };
       }
     } else {
-      return { error: `User ${this.username} does not exist.`}
+      return { error: `User ${username} does not exist.`}
     }
   }
 

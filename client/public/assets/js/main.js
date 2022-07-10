@@ -52,6 +52,7 @@ async function renderUserCart() {
         const row = document.createElement('div');
         row.classList = 'row';
         row.id = 'itemid-' + item.id;
+        row.dataset.id = item.id;
 
         const divName = document.createElement('div');
         divName.classList = 'cell itemName';
@@ -76,18 +77,8 @@ async function renderUserCart() {
         spanMinus.title = 'Decrease';
         
         spanMinus.addEventListener('click', function (evt) {
-          /*const input = $(el).parent().find("input");
-          let val = parseInt(input.val());
-          if (val > 0) {
-            val -= 1;
-            input.val(val);
-            //recalculate total price
-            const price = parseFloat($(el).parent().parent().find(".unitPrice").text());
-            calcTotalPrice(price, "-");
-            $(el).parent().parent().find(".totalPrice").text(calcItemTotalPrice(price, val));
-          }*/
+          decreaseCartItemQtt(evt);
         });
-        //onclick process
 
         spanMinus.innerHTML = '- ';
         divQtt.appendChild(spanMinus);
@@ -106,20 +97,8 @@ async function renderUserCart() {
         spanPlus.title = 'Increase';
         
         spanPlus.addEventListener('click', function (evt) {
-          /*
-          const input = $(el).parent().find("input");
-          let val = parseInt(input.val());
-          if (val < 10) {
-            val += 1;
-            input.val(val);
-            //recalculate total price
-            const price = parseFloat($(el).parent().parent().find(".unitPrice").text());
-            calcTotalPrice(price, "+");
-            $(el).parent().parent().find(".totalPrice").text(calcItemTotalPrice(price, val));
-          }
-          */
-        })
-        //onclick
+          increaseCartItemQtt(evt);
+        });
 
         spanPlus.innerHTML = ' +';
         divQtt.appendChild(spanPlus);
@@ -134,7 +113,7 @@ async function renderUserCart() {
         <div class="cell-total"></div>
         <div class="cell-total"></div>
         <div class="cell-total"></div>
-        <div class="cell-total center">Total: <span id="total">${total.toFixed(2)}</span></div>
+        <div class="cell-total center">Total: &nbsp;<span id="total">${total.toFixed(2)}</span></div>
       `;
       grid.appendChild(rowTotal);
       cartDiv.appendChild(grid);
@@ -152,6 +131,87 @@ async function renderUserCart() {
     }
     
     contentDiv.appendChild(cartDiv);
+  }
+}
+
+async function decreaseCartItemQtt(evt) {
+  const _seft = evt.target;
+  const divRow = _seft.parentElement.parentElement;
+  const input = _seft.nextSibling;
+  const min = parseInt(input.min);
+  const max = parseInt(input.max);
+  let qtt = parseInt(input.value);
+  //decrease
+  qtt -= 1;
+  
+  if (qtt === 0) {
+    //calc again other relative contents
+    const totalRemovedItemPrice = parseFloat(divRow.querySelector('.totalPrice').innerHTML);
+    //remove the line of item
+    divRow.remove();
+    const oldTotal = parseFloat(document.getElementById('total').innerHTML);
+    document.getElementById('total').innerHTML = (oldTotal - totalRemovedItemPrice).toFixed(2);
+  } else if (qtt > 0 && qtt <= max) {
+    const pid = divRow.dataset.id;
+
+    //check qtt in server
+    const response = await fetch(`${host}/products/${pid}/validate/${qtt}`)
+      .then(res => res.json());
+    if (response && !response.error) {
+      if (response.isValidate === true) {
+        input.value = qtt;
+        //then calc other relative contents
+        const unitPrice = parseFloat(divRow.querySelector('.unitPrice').innerHTML);
+        const oldTotalPrice = parseFloat(divRow.querySelector('.totalPrice').innerHTML);
+        const newTotalPrice = qtt * unitPrice;
+        divRow.querySelector('.totalPrice').innerHTML = newTotalPrice;
+
+        const oldTotal = parseFloat(document.getElementById('total').innerHTML);
+        const newTotal = oldTotal - oldTotalPrice + newTotalPrice;
+        document.getElementById('total').innerHTML = newTotal.toFixed(2);
+      } else {
+        const name = divRow.querySelector('.itemName').innerHTML;
+        alert(`Quantity of the product ${name} exits the limit station in stock.`);
+      }
+    } else {
+      alert(response.error);
+    }
+  }
+}
+
+async function increaseCartItemQtt(evt) {
+  const _seft = evt.target;
+  const input = _seft.previousSibling;
+  const min = parseInt(input.min);
+  const max = parseInt(input.max);
+  let qtt = parseInt(input.value);
+  //increase
+  qtt += 1;
+  if (qtt > 0 && qtt <= max) {
+    const divRow = _seft.parentElement.parentElement;
+    const pid = divRow.dataset.id;
+    
+    const response = await fetch(`${host}/products/${pid}/validate/${qtt}`)
+      .then(res => res.json());
+    if (response && !response.error) {
+      if (response.isValidate === true) {
+        //check qtt in server
+        input.value = qtt;
+        // calc other relative content
+        const unitPrice = parseFloat(divRow.querySelector('.unitPrice').innerHTML);
+        const oldTotalPrice = parseFloat(divRow.querySelector('.totalPrice').innerHTML);
+        const newTotalPrice = qtt * unitPrice;
+        divRow.querySelector('.totalPrice').innerHTML = newTotalPrice;
+        const oldTotal = parseFloat(document.getElementById('total').innerHTML);
+        const newTotal = oldTotal - oldTotalPrice + newTotalPrice;
+        document.getElementById('total').innerHTML = newTotal.toFixed(2);
+      } else {
+        const name = divRow.querySelector('.itemName').innerHTML;
+        alert(`Quantity of the product ${name} exits the limit station in stock.`);
+      }
+    } else {
+      alert(response.error);
+    }
   }
 }
 
@@ -191,6 +251,7 @@ async function renderProducts() {
       const row = document.createElement('div');
       row.classList = 'row';
       row.id = 'pid-' + prod.id;
+      row.dataset.id = prod.id;
       
       const divName = document.createElement('div');
       divName.classList = 'cell proName';
@@ -247,7 +308,6 @@ function authorizedChecking() {
     .then(obj => {
       if (obj && obj.error) {
         //show login form
-        console.log('error authen')
         document.getElementById('loginForm').classList = 'login';
         document.getElementById('welcome').classList = 'login hide';
         //show blank body

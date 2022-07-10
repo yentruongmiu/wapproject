@@ -55,7 +55,7 @@ class Product {
     const index = products.findIndex(p => p.id == prodId);
     if (index >= 0) {
       const selectedProd = products[index];
-      return selectedProd.quantity >= parseInt(quantity) ? true : false;
+      return { isValidate: selectedProd.quantity >= parseInt(quantity) ? true : false };
     } else {
       return { error: `Not found product ${prodId}` };
     }

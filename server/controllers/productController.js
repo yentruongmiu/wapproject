@@ -20,7 +20,7 @@ exports.updateProductQuantityById = (req, res) => {
 //use get for this case
 exports.validateProductQuantityById = (req, res) => {
   const result = Product.validateQuantityById(req.params.id, req.params.quantity);
-  res.status(200).json({isValidate: result});
+  res.status(200).json(result);
 }
 
 exports.save = (req, res) => {
