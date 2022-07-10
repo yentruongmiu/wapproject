@@ -4,7 +4,7 @@ const cartController = require('../controllers/cartController');
 
 const router = express.Router();
 const userPrefix = '/user';
-const cartPrefix = '/cart';
+const cartPrefix = 'cart';
 // user/:uId/cart/doing
 
 router.post(`${userPrefix}/:uId/${cartPrefix}`, cartController.save);

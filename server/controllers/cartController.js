@@ -7,7 +7,6 @@ exports.save = (req, res) => {
 }
 
 exports.getCart = (req, res) => {
-  console.log('first');
   res.status(200).json(Cart.getByUser(req.params.uId));
 }
 
