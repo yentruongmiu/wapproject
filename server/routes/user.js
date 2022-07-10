@@ -9,4 +9,6 @@ router.post(`${prefix}/login`, userController.login);
 
 router.get(`${prefix}/logout`, userController.logout);
 
+router.get(`${prefix}/authorization`, userController.authorization);
+
 module.exports = router;

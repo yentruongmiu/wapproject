@@ -14,10 +14,10 @@
   <body>
     <div class="container">
       <div class="header">
-        <a href="#">
+        <a href="javascript:void(0);">
           <img src="./public/assets/images/yt_logo.png" alt="My Logo" />
         </a>
-        <div class="login">
+        <div class="login" id="loginForm">
           <div class="form">
             <div>
               <label for="username">Username</label>
@@ -27,10 +27,21 @@
               <label for="password">Password</label>
               <input type="password" name="password" id="password" />
             </div>
+            <div>
+              <span class="error" id="loginError"></span>
+            </div>
           </div>
         
-          <div class="btn">
+          <div class="btn" id="loginBtn">
             <button class="button">Login</button>
+          </div>
+        </div>
+
+        <div class="login hide" id="welcome">
+          <div class="welcome">Welcome, user1</div>
+          
+          <div class="btn">
+            <button class="button" id="logoutBtn">Logout</button>
           </div>
         </div>
         

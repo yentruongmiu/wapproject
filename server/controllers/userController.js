@@ -5,10 +5,9 @@ exports.login = (req, res) => {
 }
 
 exports.logout = (req, res) => {
-  const token = req.headers.authorization.replace(/bearer /ig, '');
-  res.status(200).json(User.logout(token));
+  res.status(200).json(User.logout(req.headers.authorization));
 }
 
-// exports.authenticate = (req, res) => {
-//   //
-// }
+exports.authorization = (req, res) => {
+  res.status(200).json(User.authorization(req.headers.authorization));
+}

@@ -39,7 +39,6 @@ class User {
   }
 
   static login(username, password) {
-    //this
     const index = users.findIndex(u => u.username === username);
     if (index >= 0) {
       const user = users[index];
@@ -60,19 +59,20 @@ class User {
     }
   }
 
-  static authenticate(authorization) {
+  static authorization(authorization) {
     //check token for all other API
-    //Header: 'Authorization: bearer token'
+    //Header: 'authorization: bearer token'
     if (authorization) {
-      const token = authorization.replace(/bearer/g, '');
+      const token = authorization.replace(/bearer /ig, '');
       return User.getMe(token);
     } else {
       return { error: 'Invalid token.' };
     }
   }
 
-  static logout(token) {
+  static logout(authorization) {
     //has token from the client
+    const token = authorization.replace(/bearer /ig, '');
     const index = users.findIndex(user => user.token === token);
     if (index >= 0) {
       const loginUser = users[index];
