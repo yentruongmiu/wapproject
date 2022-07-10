@@ -40,15 +40,11 @@ hr {
   padding-top: 20px;
   float: right;
 }
-.header .login div {
-  display: flex;
-  flex-direction: column;
-  margin: 10px;
-}
 .header .login .form {
   width: 300px;
   display: flex;
   flex-direction: column;
+  margin: 10px;
 }
 .header .login div.btn {
   margin-top: 20px;
@@ -63,6 +59,10 @@ hr {
   position: relative;
   text-align: right;
   top: 35px;
+  margin: 10px;
+}
+.header .login div.welcome span {
+  text-decoration: underline;
 }
 .header .login .form div label {
   width: 100px;
@@ -178,7 +178,6 @@ a:visited {
   flex-wrap: nowrap;
   flex: 1;
   padding: 10px 15px;
-  /* border: 1px solid #643838; */
 }
 
 .cell span {
@@ -194,7 +193,10 @@ a:visited {
   padding: 0 5px;
   float: left;
 }
-
+.product-img {
+  width: 30px;
+  margin: 3px;
+}
 .control {
   display: block;
   width: 100%;
@@ -225,7 +227,7 @@ a:visited {
 
 .italic {
   font-style: italic;
-  color: red;
+  color: #ff0000;
   font-size: 0.8em;
 }
 
@@ -236,9 +238,10 @@ a:visited {
 }
 
 .footer {
-  background-color: #ccc;
+  background-color: #643838;
   padding: 15px 10px;
   text-align: right;
+  color: #fff;
 }
 .hide {
   display: none !important;

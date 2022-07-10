@@ -5,7 +5,6 @@ class Product {
     this.id = id;
     this.name = name;
     this.price = price;
-    // /resources/images/imagename.ext
     this.image = image;
     this.quantity = quantity;
   }

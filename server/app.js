@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 
 const productRoutes = require('./routes/product');
 const cartRoutes = require('./routes/cart');
@@ -9,6 +10,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
+app.use('/images', express.static(path.join(__dirname, 'public', 'assets', 'images')));
 
 app.use(userRoutes);
 app.use(productRoutes);

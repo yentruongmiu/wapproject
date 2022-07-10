@@ -5,13 +5,13 @@
       "id": 1,
       "name": "Node.js",
       "price": 9.99,
-      "image": "/resources/images/nodejs.png",
+      "image": "nodejs.png",
       "quantity": 1
     }, {
       "id": 2,
       "name": "React",
       "price": 19.99,
-      "image": "/resources/images/reactjs.png",
+      "image": "reactjs.png",
       "quantity": 1
     }]
   }, {
@@ -20,13 +20,13 @@
       "id": 2,
       "name": "React",
       "price": 19.99,
-      "image": "/resources/images/reactjs.png",
+      "image": "reactjs.png",
       "quantity": 1
     }, {
       "id": 3,
       "name": "Angular",
       "price": 29.99,
-      "image": "/resources/images/angular.png",
+      "image": "angular.png",
       "quantity": 1
     }]
   }

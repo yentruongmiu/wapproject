@@ -45,7 +45,7 @@ class User {
       if (user.password === password) {
         //username and password is match => generate token: username + Date.now()
         const loginTime = new Date();
-        const token = `${user.username}${loginTime.getTime()}`;
+        const token = `${user.username}$${user.id}$${loginTime.getTime()}`;
         //save to user
         user.lastLogin = loginTime;
         user.token = token;
@@ -64,7 +64,10 @@ class User {
     //Header: 'authorization: bearer token'
     if (authorization) {
       const token = authorization.replace(/bearer /ig, '');
-      return User.getMe(token);
+      if (token !== 'null') {
+        return User.getMe(token);
+      }
+      else return { error: 'Invalid token.' };
     } else {
       return { error: 'Invalid token.' };
     }
@@ -73,6 +76,9 @@ class User {
   static logout(authorization) {
     //has token from the client
     const token = authorization.replace(/bearer /ig, '');
+    if (token === 'null') {
+      return { error: 'Invalid token.' };
+    } 
     const index = users.findIndex(user => user.token === token);
     if (index >= 0) {
       const loginUser = users[index];

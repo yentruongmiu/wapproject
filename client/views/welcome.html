@@ -28,16 +28,18 @@
         <div id="products">
           <p>Product list</p>
         
-          <div class="grid">
+          <div class="grid" id="product-grid">
             <div class="row">
               <div class="head cell">Name</div>
               <div class="head cell">Price</div>
+              <div class="head cell">Image</div>
               <div class="head cell">Stock</div>
               <div class="head cell">Actions</div>
             </div>
             <div class="row">
               <div class="cell">Nodejs</div>
               <div class="cell number">9.99</div>
+              <div class="cell"><img class="product-img" src="../public/assets/images/nodejs.png" alt="Nodejs" /></div>
               <div class="cell number">8</div>
               <div class="cell">
                 <i class="fas fa-shopping-cart" title="Add to cart"></i>
@@ -46,6 +48,7 @@
             <div class="row">
               <div class="cell">React</div>
               <div class="cell number">19.99</div>
+              <div class="cell"><img class="product-img" src="../public/assets/images/nodejs.png" alt="React" /></div>
               <div class="cell number">5</div>
               <div class="cell">
                 <i class="fas fa-shopping-cart" title="Add to cart"></i>
@@ -54,6 +57,7 @@
             <div class="row">
               <div class="cell">Angular</div>
               <div class="cell number">29.99</div>
+              <div class="cell"><img class="product-img" src="../public/assets/images/nodejs.png" alt="Angular" /></div>
               <div class="cell number">15</div>
               <div class="cell">
                 <i class="fas fa-shopping-cart" title="Add to cart"></i>
@@ -69,7 +73,7 @@
         <div id="cart">
           <p>Your shopping cart</p>
         
-          <div class="grid">
+          <div class="grid" id="grid-cart">
             <div class="row">
               <div class="head cell">Name</div>
               <div class="head cell">Price</div>

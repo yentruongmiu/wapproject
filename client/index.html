@@ -17,20 +17,22 @@
         <a href="javascript:void(0);">
           <img src="./public/assets/images/yt_logo.png" alt="My Logo" />
         </a>
-        <div class="login" id="loginForm">
+        <div class="login hide" id="loginForm">
+          <form>
           <div class="form">
             <div>
               <label for="username">Username</label>
-              <input type="text" name="username" id="username" />
+              <input type="text" name="username" id="username" autocomplete="on" />
             </div>
             <div>
               <label for="password">Password</label>
-              <input type="password" name="password" id="password" />
+              <input type="password" name="password" id="password" autocomplete="on" />
             </div>
             <div>
               <span class="error" id="loginError"></span>
             </div>
           </div>
+          </form>
         
           <div class="btn" id="loginBtn">
             <button class="button">Login</button>
@@ -38,8 +40,8 @@
         </div>
 
         <div class="login hide" id="welcome">
-          <div class="welcome">Welcome, user1</div>
-          
+          <div class="welcome">Welcome, <span id="loggedUser"></span></div>
+
           <div class="btn">
             <button class="button" id="logoutBtn">Logout</button>
           </div>
@@ -48,7 +50,7 @@
       </div>
       
       <div class="content" id="content">
-        <p>Welcome to my store</p>
+        <p id="welcome-store">Welcome to my store</p>
       </div>
 
       <div class="footer">&copy;Copyright by Yen Truong's shop</div>
