@@ -7,6 +7,8 @@ const cartRoutes = require('./routes/cart');
 const userRoutes = require('./routes/user');
 const orderRoutes = require('./routes/order');
 
+const auth = require('./auth');
+
 const app = express();
 const port = process.env.PORT || 3000;
 app.use(cors());
@@ -14,9 +16,9 @@ app.use(express.json());
 app.use('/images', express.static(path.join(__dirname, 'public', 'assets', 'images')));
 
 app.use(userRoutes);
-app.use(productRoutes);
-app.use(cartRoutes);
-app.use(orderRoutes);
+app.use(auth, productRoutes);
+app.use(auth, cartRoutes);
+app.use(auth, orderRoutes);
 
 
 app.use((req, res, next) => {

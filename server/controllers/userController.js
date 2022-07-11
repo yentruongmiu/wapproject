@@ -8,6 +8,6 @@ exports.logout = (req, res) => {
   res.status(200).json(User.logout(req.headers.authorization));
 }
 
-exports.authorization = (req, res) => {
-  res.status(200).json(User.authorization(req.headers.authorization));
+exports.authentication = (req, res) => {
+  res.status(200).json(User.authentication(req.headers.authorization));
 }

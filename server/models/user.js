@@ -59,7 +59,7 @@ class User {
     }
   }
 
-  static authorization(authorization) {
+  static authentication(authorization) {
     //Header: 'authorization: bearer token'
     if (authorization) {
       const token = authorization.replace(/bearer /ig, '');

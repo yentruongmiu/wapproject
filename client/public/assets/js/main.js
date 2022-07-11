@@ -1,7 +1,6 @@
 window.onload = function () {
   //check authorized then loading the right content
-  authorizedChecking();
-
+  authenticationChecking();
 
   //no authenticate: show login form
   document.getElementById('loginBtn').onclick = login;
@@ -486,9 +485,9 @@ async function placeOrder(evt) {
   }
 }
 
-function authorizedChecking() {
+function authenticationChecking() {
   if (sessionStorage.getItem('accessToken')) {
-    fetch(`${host}/users/authorization`, {
+    fetch(`${host}/users/authentication`, {
     method: 'GET',
     cache: 'no-cache',
     headers: headersGeneration()
