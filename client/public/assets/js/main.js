@@ -485,7 +485,7 @@ async function placeOrder(evt) {
       renderUserCart();
     } else {
       alert(`The order has already placed!`);
-      //update product list YEN
+      //update product list
       renderProducts();
       renderUserCart();
     }
@@ -522,7 +522,7 @@ function authenticationChecking() {
       console.log(err);
     });
   } else {
-    //YEN show
+    // show
     document.getElementById('loginForm').classList = 'login';
     document.getElementById('welcome').classList = 'login hide';
     //show blank body
