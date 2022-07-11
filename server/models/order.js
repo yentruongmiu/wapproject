@@ -1,5 +1,4 @@
 let orders = [];
-const e = require('express');
 const Product = require('./product');
 const Cart = require('./cart');
 
