@@ -66,7 +66,8 @@ async function decreaseCartItemQtt(evt) {
   qtt -= 1;
   const accessToken = sessionStorage.getItem('accessToken');
   const uId = accessToken.split('$')[1];
-  if (qtt === 0) {
+  if (qtt === 0 || max === 0) {
+    //max === 0: other user buy all products then current user can not buy and he must to delete out of cart.
     //remove out cart items in server
     const cart = await fetch(`${host}/user/${uId}/cart/subtract`, {
       method: 'POST',
@@ -472,6 +473,8 @@ async function placeOrder(evt) {
     }).then(res => res.json());
     if (order && order.error) {
       alert(order.error);
+      renderProducts();
+      renderUserCart();
     } else {
       alert(`The order has already placed!`);
       //update product list YEN

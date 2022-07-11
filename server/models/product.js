@@ -39,12 +39,17 @@ class Product {
     }
   }
 
+  static getNamesByIds(prodIds) {
+    return products.filter(p => prodIds.includes(p.id))
+      .map(p => p.name).join(', ');
+  }
+
   static subtractQuantityById(prodId, quantity) {
     const index = products.findIndex(p => p.id == prodId);
     if (index >= 0) {
       const updatedProd = products[index];
       const remainQtt = parseInt(updatedProd.quantity) - parseInt(quantity);
-      console.log('remainQtt', remainQtt);
+      
       if (remainQtt >= 0) {
         updatedProd.quantity = remainQtt;
         products.splice(index, 1, updatedProd);

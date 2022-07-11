@@ -15,7 +15,8 @@ class Order {
     let result = Order.validateBeforeSaving(this.items);
     result = result.filter(item => item.isValidate === false).map(item => item.id);
     if (result.length) {
-      return { error: `Quantity of products ${result.join(', ')} exceeds the limit station in stock.`};
+      const names = Product.getNamesByIds(result);
+      return { error: `Quantity of products ${names} exceeds the limit station in stock.`};
     } else {
       this.id = orders.length + 1;
       orders.push(this);
