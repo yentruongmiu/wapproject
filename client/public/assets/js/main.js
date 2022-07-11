@@ -94,7 +94,10 @@ async function decreaseCartItemQtt(evt) {
   } else if (qtt > min && qtt <= max) {
     const pId = divRow.dataset.id;
     //check qtt in server
-    const response = await fetch(`${host}/products/${pId}/validate/${qtt}`)
+    const response = await fetch(`${host}/products/${pId}/validate/${qtt}`, {
+      method: 'GET',
+      headers: headersGeneration()
+    })
       .then(res => res.json());
     if (response && !response.error) {
       if (response.isValidate === true) {
@@ -145,7 +148,10 @@ async function increaseCartItemQtt(evt) {
     const accessToken = sessionStorage.getItem('accessToken');
     const uId = accessToken.split('$')[1];
     
-    const response = await fetch(`${host}/products/${pId}/validate/${qtt}`)
+    const response = await fetch(`${host}/products/${pId}/validate/${qtt}`, {
+      method: 'GET',
+      headers: headersGeneration()
+    })
       .then(res => res.json());
     if (response && !response.error) {
       if (response.isValidate === true) {
@@ -220,7 +226,7 @@ async function renderProducts() {
 
       const divPrice = document.createElement('div');
       divPrice.classList = 'cell number price';
-      divPrice.innerHTML = prod.price;
+      divPrice.innerHTML = prod.price.toFixed(2);
       row.appendChild(divPrice);
 
       const divImg = document.createElement('div');
@@ -279,7 +285,10 @@ async function addToCart(evt) {
       if (qtt) {
         qtt = 1 + parseInt(document.getElementById(`itemid-${product.id}`).querySelector('.qtt').value);
         //validate
-        const response = await fetch(`${host}/products/${product.id}/validate/${qtt}`)
+        const response = await fetch(`${host}/products/${product.id}/validate/${qtt}`, {
+          method: 'GET',
+          headers: headersGeneration()
+        })
           .then(res => res.json());
         if (response && !response.error) {
           if (response.isValidate === true) {
@@ -378,13 +387,13 @@ function renderCartGrid(cart, cartGrid) {
 
     const divPrice = document.createElement('div');
     divPrice.classList = 'cell number unitPrice';
-    divPrice.innerHTML = item.price;
+    divPrice.innerHTML = item.price.toFixed(2);
     row.appendChild(divPrice);
 
     const divTotal = document.createElement('div');
     divTotal.classList = 'cell number totalPrice';
     const totalProductPrice = parseFloat(item.price) * parseInt(item.quantity);
-    divTotal.innerHTML = totalProductPrice;
+    divTotal.innerHTML = totalProductPrice.toFixed(2);
     total += totalProductPrice;
     row.appendChild(divTotal);
 
