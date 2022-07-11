@@ -14,8 +14,8 @@ exports.update = (req, res) => {
   res.status(200).json(updatedProd);
 }
 
-exports.updateProductQuantityById = (req, res) => {
-  res.status(200).json(Product.updateQuantityById(req.params.id, req.params.quantity));
+exports.subtractProductQuantityById = (req, res) => {
+  res.status(200).json(Product.subtractQuantityById(req.params.id, req.params.quantity));
 }
 //use get for this case
 exports.validateProductQuantityById = (req, res) => {

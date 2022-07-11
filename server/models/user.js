@@ -60,7 +60,6 @@ class User {
   }
 
   static authorization(authorization) {
-    //check token for all other API
     //Header: 'authorization: bearer token'
     if (authorization) {
       const token = authorization.replace(/bearer /ig, '');

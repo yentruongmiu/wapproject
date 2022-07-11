@@ -39,13 +39,19 @@ class Product {
     }
   }
 
-  static updateQuantityById(prodId, quantity) {
+  static subtractQuantityById(prodId, quantity) {
     const index = products.findIndex(p => p.id == prodId);
     if (index >= 0) {
       const updatedProd = products[index];
-      updatedProd.quantity = parseInt(quantity);
-      products.splice(index, 1, updatedProd);
-      return updatedProd;
+      const remainQtt = parseInt(updatedProd.quantity) - parseInt(quantity);
+      console.log('remainQtt', remainQtt);
+      if (remainQtt >= 0) {
+        updatedProd.quantity = remainQtt;
+        products.splice(index, 1, updatedProd);
+        return updatedProd;
+      } else {
+        return { error: `Product ${prodId}'s stock is not enough to subtract ${quantity}.` };
+      }
     } else {
       return { error: `Not found product ${prodId}` };
     }

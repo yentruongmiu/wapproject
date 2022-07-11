@@ -22,7 +22,32 @@ class Cart {
     }
   }
 
-  static update(userId, prod) {
+  static addItem(userId, prod) {
+    const index = carts.findIndex(cart => cart.userId == userId);
+    prod = { ...prod, id: parseInt(prod.id) };
+    let cart;
+    if (index >= 0) {
+      cart = carts[index];
+      const items = cart.items.map(item => {
+        if (item.id == prod.id) {
+          const qtt = parseInt(prod.quantity) + parseInt(item.quantity);
+          return {...item, quantity: qtt};
+        } else return item;
+      });
+      if (!items.map(item => item.id).includes(prod.id)) {
+        items.push(prod);
+      }
+      cart.items = items;
+      carts.splice(index, 1, cart);
+    } else {
+      //new cart
+      cart = new Cart(userId, [prod]);
+      cart.save();
+    }
+    return cart;
+  }
+
+  static subtractItem(userId, prod) {
     const index = carts.findIndex(cart => cart.userId == userId);
     let cart;
     if (index >= 0) {
@@ -34,11 +59,28 @@ class Cart {
       } else {
         const items = cart.items.map(item => {
           if (item.id == prod.id) {
-            return prod;
+            return {...item, quantity: parseInt(item.quantity) - parseInt(prod.quantity)};
           } else return item;
         });
         cart.items = items;
       }
+      
+      carts.splice(index, 1, cart);
+    } else {
+      //new cart with items is empty array
+      cart = new Cart(userId, []);
+      
+      cart.save();
+    }
+    return cart;
+  } 
+
+  static update(userId, prods) {
+    const index = carts.findIndex(cart => cart.userId == userId);
+    let cart;
+    if (index >= 0) {
+      cart = carts[index];
+      cart.items = prods;
 
       carts.splice(index, 1, cart);
     } else {

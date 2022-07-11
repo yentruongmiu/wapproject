@@ -11,7 +11,7 @@ router.get(`${prefix}/:id`, productController.getProductById);
 
 router.put(`${prefix}/:id`, productController.update);
 
-router.put(`${prefix}/:id/:quantity`, productController.updateProductQuantityById);
+router.post(`${prefix}/:id/:quantity`, productController.subtractProductQuantityById);
 
 router.get(`${prefix}/:id/validate/:quantity`, productController.validateProductQuantityById);
 

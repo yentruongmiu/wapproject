@@ -5,6 +5,7 @@ const path = require('path');
 const productRoutes = require('./routes/product');
 const cartRoutes = require('./routes/cart');
 const userRoutes = require('./routes/user');
+const orderRoutes = require('./routes/order');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -15,6 +16,7 @@ app.use('/images', express.static(path.join(__dirname, 'public', 'assets', 'imag
 app.use(userRoutes);
 app.use(productRoutes);
 app.use(cartRoutes);
+app.use(orderRoutes);
 
 
 app.use((req, res, next) => {
@@ -22,7 +24,6 @@ app.use((req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  console.log(err);
     if (err.message === 'Not Found') {
         res.status(404).json({ error: err.message });
     } else {

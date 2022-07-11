@@ -29,111 +29,32 @@ async function renderUserCart() {
     cartDiv.appendChild(pTitle);
 
     if (cart.items.length == 0) {
-      const pInfo = document.createElement('p');
-      pInfo.style.textTransform = 'initial';
-      pInfo.innerHTML = 'There is no item in your shopping cart!';
+      const pInfo = renderNoCartItem();
       cartDiv.appendChild(pInfo);
     } else {
-      const grid = document.createElement('div');
+      let grid = document.createElement('div');
       grid.classList = 'grid';
       grid.id = 'cart-grid';
-
-      const rowHead = document.createElement('div');
-      rowHead.classList = 'row';
-      rowHead.innerHTML = `
-        <div class="head cell">Name</div>
-        <div class="head cell">Price</div>
-        <div class="head cell">Total</div>
-        <div class="head cell">Quantity</div>
-      `;
-      grid.appendChild(rowHead);
-      let total = 0;
-      cart.items.forEach(item => {
-        const row = document.createElement('div');
-        row.classList = 'row';
-        row.id = 'itemid-' + item.id;
-        row.dataset.id = item.id;
-
-        const divName = document.createElement('div');
-        divName.classList = 'cell itemName';
-        divName.innerHTML = item.name;
-        row.appendChild(divName);
-
-        const divPrice = document.createElement('div');
-        divPrice.classList = 'cell number unitPrice';
-        divPrice.innerHTML = item.price;
-        row.appendChild(divPrice);
-
-        const divTotal = document.createElement('div');
-        divTotal.classList = 'cell number totalPrice';
-        const totalProductPrice = parseFloat(item.price) * parseInt(item.quantity);
-        divTotal.innerHTML = totalProductPrice;
-        total += totalProductPrice;
-        row.appendChild(divTotal);
-
-        const divQtt = document.createElement('div');
-        divQtt.classList = 'cell center';
-        const spanMinus = document.createElement('span');
-        spanMinus.title = 'Decrease';
-        
-        spanMinus.addEventListener('click', function (evt) {
-          decreaseCartItemQtt(evt);
-        });
-
-        spanMinus.innerHTML = '- ';
-        divQtt.appendChild(spanMinus);
-
-        const inputMin = document.createElement('input');
-        inputMin.type = 'number';
-        inputMin.min = 0;
-        inputMin.classList = 'qtt';
-        const linkedProd = document.querySelector(`#pid-${item.id}`);
-        const prodStock = linkedProd.querySelector(`.stock`).innerHTML;
-        inputMin.max = prodStock;
-        inputMin.value = item.quantity;
-        divQtt.appendChild(inputMin);
-
-        const spanPlus = document.createElement('span');
-        spanPlus.title = 'Increase';
-        
-        spanPlus.addEventListener('click', function (evt) {
-          increaseCartItemQtt(evt);
-        });
-
-        spanPlus.innerHTML = ' +';
-        divQtt.appendChild(spanPlus);
-        row.appendChild(divQtt);
-
-        grid.appendChild(row);
-      });
-
-      const rowTotal = document.createElement('div');
-      rowTotal.classList = 'row';
-      rowTotal.innerHTML = `
-        <div class="cell-total"></div>
-        <div class="cell-total"></div>
-        <div class="cell-total"></div>
-        <div class="cell-total center">Total: &nbsp;<span id="total">${total.toFixed(2)}</span></div>
-      `;
-      grid.appendChild(rowTotal);
+      
+      grid = renderCartGrid(cart, grid);
+      
       cartDiv.appendChild(grid);
 
-      const divCtrl = document.createElement('div');
-      divCtrl.classList = 'control';
-      const divBtn = document.createElement('div');
-      divBtn.classList = 'btn';
-      const btn = document.createElement('button');
-      btn.classList = 'button';
-      btn.innerHTML = 'Place order';
-      divBtn.appendChild(btn);
-      divCtrl.appendChild(divBtn);
-      cartDiv.appendChild(divCtrl);
+      const ctrlDiv = renderCartControl();
+
+      cartDiv.appendChild(ctrlDiv);
     }
     
     contentDiv.appendChild(cartDiv);
   }
 }
-
+function renderNoCartItem() {
+  const pInfo = document.createElement('p');
+  pInfo.classList = 'no-item-cart';
+  pInfo.style.textTransform = 'initial';
+  pInfo.innerHTML = 'There is no item in your shopping cart!';
+  return pInfo;
+}
 async function decreaseCartItemQtt(evt) {
   const _seft = evt.target;
   const divRow = _seft.parentElement.parentElement;
@@ -143,35 +64,66 @@ async function decreaseCartItemQtt(evt) {
   let qtt = parseInt(input.value);
   //decrease
   qtt -= 1;
-  
+  const accessToken = sessionStorage.getItem('accessToken');
+  const uId = accessToken.split('$')[1];
   if (qtt === 0) {
-    //calc again other relative contents
-    const totalRemovedItemPrice = parseFloat(divRow.querySelector('.totalPrice').innerHTML);
-    //remove the line of item
-    divRow.remove();
-    const oldTotal = parseFloat(document.getElementById('total').innerHTML);
-    document.getElementById('total').innerHTML = (oldTotal - totalRemovedItemPrice).toFixed(2);
-  } else if (qtt > 0 && qtt <= max) {
-    const pid = divRow.dataset.id;
-
+    //remove out cart items in server
+    const cart = await fetch(`${host}/user/${uId}/cart/subtract`, {
+      method: 'POST',
+      headers: headersGeneration(),
+      body: JSON.stringify({
+        id: divRow.dataset.id,
+        quantity: 0
+      })
+    }).then(res => res.json())
+    if (cart && !cart.error) {
+      //remove the line of item
+      const cartGrid = document.getElementById('cart-grid');
+      if (cart.items.length > 0) {
+        cartGrid.innerHTML = '';
+        renderCartGrid(cart, cartGrid);
+      } else {
+        cartGrid.remove();
+        document.getElementById('cart').querySelector('.control').remove();
+        const pInfo = renderNoCartItem();
+        document.getElementById('cart').appendChild(pInfo);
+      }
+    } else {
+      alert(cart.error);
+    }
+  } else if (qtt > min && qtt <= max) {
+    const pId = divRow.dataset.id;
     //check qtt in server
-    const response = await fetch(`${host}/products/${pid}/validate/${qtt}`)
+    const response = await fetch(`${host}/products/${pId}/validate/${qtt}`)
       .then(res => res.json());
     if (response && !response.error) {
       if (response.isValidate === true) {
         input.value = qtt;
-        //then calc other relative contents
-        const unitPrice = parseFloat(divRow.querySelector('.unitPrice').innerHTML);
-        const oldTotalPrice = parseFloat(divRow.querySelector('.totalPrice').innerHTML);
-        const newTotalPrice = qtt * unitPrice;
-        divRow.querySelector('.totalPrice').innerHTML = newTotalPrice;
-
-        const oldTotal = parseFloat(document.getElementById('total').innerHTML);
-        const newTotal = oldTotal - oldTotalPrice + newTotalPrice;
-        document.getElementById('total').innerHTML = newTotal.toFixed(2);
+        //subtract items cart in server
+        fetch(`${host}/user/${uId}/cart/subtract`, {
+          method: 'POST',
+          headers: headersGeneration(),
+          body: JSON.stringify({
+            id: pId,
+            quantity: 1
+          })
+        }).then(res => res.json())
+          .then(cart => {
+            //then calc other relative contents
+            const cartGrid = document.getElementById('cart-grid');
+            if (cart.items.length > 0) {
+              cartGrid.innerHTML = '';
+              renderCartGrid(cart, cartGrid);
+            } else {
+              cartGrid.remove();
+              document.getElementById('cart').querySelector('.control').remove();
+              const pInfo = renderNoCartItem();
+              document.getElementById('cart').appendChild(pInfo);
+            }
+          });
       } else {
         const name = divRow.querySelector('.itemName').innerHTML;
-        alert(`Quantity of the product ${name} exits the limit station in stock.`);
+        alert(`Quantity of the product ${name} exceeds the limit station in stock.`);
       }
     } else {
       alert(response.error);
@@ -187,27 +139,35 @@ async function increaseCartItemQtt(evt) {
   let qtt = parseInt(input.value);
   //increase
   qtt += 1;
-  if (qtt > 0 && qtt <= max) {
+  if (qtt > min && qtt <= max) {
     const divRow = _seft.parentElement.parentElement;
-    const pid = divRow.dataset.id;
+    const pId = divRow.dataset.id;
+    const accessToken = sessionStorage.getItem('accessToken');
+    const uId = accessToken.split('$')[1];
     
-    const response = await fetch(`${host}/products/${pid}/validate/${qtt}`)
+    const response = await fetch(`${host}/products/${pId}/validate/${qtt}`)
       .then(res => res.json());
     if (response && !response.error) {
       if (response.isValidate === true) {
         //check qtt in server
         input.value = qtt;
-        // calc other relative content
-        const unitPrice = parseFloat(divRow.querySelector('.unitPrice').innerHTML);
-        const oldTotalPrice = parseFloat(divRow.querySelector('.totalPrice').innerHTML);
-        const newTotalPrice = qtt * unitPrice;
-        divRow.querySelector('.totalPrice').innerHTML = newTotalPrice;
-        const oldTotal = parseFloat(document.getElementById('total').innerHTML);
-        const newTotal = oldTotal - oldTotalPrice + newTotalPrice;
-        document.getElementById('total').innerHTML = newTotal.toFixed(2);
+        //add items cart in server
+        fetch(`${host}/user/${uId}/cart/add`, {
+          method: 'POST',
+          headers: headersGeneration(),
+          body: JSON.stringify({
+            id: pId,
+            quantity: 1
+          })
+        }).then(res => res.json())
+          .then(cart => {
+            const cartGrid = document.getElementById('cart-grid');
+            cartGrid.innerHTML = '';
+            renderCartGrid(cart, cartGrid);
+          });
       } else {
         const name = divRow.querySelector('.itemName').innerHTML;
-        alert(`Quantity of the product ${name} exits the limit station in stock.`);
+        alert(`Quantity of the product ${name} exceeds the limit station in stock.`);
       }
     } else {
       alert(response.error);
@@ -278,9 +238,9 @@ async function renderProducts() {
       const icon = document.createElement('i')
       icon.classList = 'fas fa-shopping-cart';
       icon.title = 'Add to cart';
-
-      //action of icon
-
+      icon.addEventListener('click', function (evt) {
+        addToCart(evt);
+      });
 
       divAct.appendChild(icon);
       row.appendChild(divAct);
@@ -298,9 +258,234 @@ async function renderProducts() {
     contentDiv.appendChild(seperate);
   }
 }
+async function addToCart(evt) {
+  const _seft = evt.target;
+  const divRow = _seft.parentElement.parentElement;
+  const pId = divRow.dataset.id;
+  const product = await fetch(`${host}/products/${pId}`, {
+    method: 'GET',
+    headers: headersGeneration()
+  }).then(res => res.json());
+  if (product && product.error) {
+    alert(product.error);
+  } else {
+    if (product.quantity) {
+      const item = { ...product, quantity: 1 };
+      //update stock in product list
+      divRow.querySelector('.stock').innerHTML = product.quantity;
+      const accessToken = sessionStorage.getItem('accessToken');
+      const uId = accessToken.split('$')[1];
+      let qtt = !!document.getElementById(`itemid-${product.id}`);
+      if (qtt) {
+        qtt = 1 + parseInt(document.getElementById(`itemid-${product.id}`).querySelector('.qtt').value);
+        //validate
+        const response = await fetch(`${host}/products/${product.id}/validate/${qtt}`)
+          .then(res => res.json());
+        if (response && !response.error) {
+          if (response.isValidate === true) {
+            //add product to cart
+            const cart = await fetch(`${host}/user/${uId}/cart/add`, {
+              method: 'POST',
+              headers: headersGeneration(),
+              body: JSON.stringify(item)
+            }).then(res => res.json());
+            if (cart && !cart.error) {
+              let cartGrid = !!document.getElementById('cart-grid');
+              if (!cartGrid) {
+                cartGrid = document.createElement('div');
+                cartGrid.classList = 'grid';
+                cartGrid.id = 'cart-grid';
+
+                const cartDiv = document.getElementById('cart');
+                cartDiv.querySelector('.no-item-cart').remove();
+
+                cartGrid = renderCartGrid(cart, cartGrid);
+                cartDiv.appendChild(cartGrid);
+                const ctrlDiv = renderCartControl();
+                cartDiv.appendChild(ctrlDiv);
+              } else {
+                cartGrid = document.getElementById('cart-grid');
+                cartGrid.innerHTML = '';
+                renderCartGrid(cart, cartGrid);
+              }
+            } else {
+              alert(cart.error);
+            }
+          } else {
+            alert(`Quantity of the product ${product.name} exceeds the limit station in stock.`);
+          }
+        } else {
+          alert(response.error);
+        }
+      } else {
+        const cart = await fetch(`${host}/user/${uId}/cart/add`, {
+          method: 'POST',
+          headers: headersGeneration(),
+          body: JSON.stringify(item)
+        }).then(res => res.json());
+        if (cart && !cart.error) {
+          let cartGrid = !!document.getElementById('cart-grid');
+          if (!cartGrid) {
+            cartGrid = document.createElement('div');
+            cartGrid.classList = 'grid';
+            cartGrid.id = 'cart-grid';
+
+            const cartDiv = document.getElementById('cart');
+            cartDiv.querySelector('.no-item-cart').remove();
+
+            cartGrid = renderCartGrid(cart, cartGrid);
+            cartDiv.appendChild(cartGrid);
+            const ctrlDiv = renderCartControl();
+            cartDiv.appendChild(ctrlDiv);
+          } else {
+            cartGrid = document.getElementById('cart-grid');
+            cartGrid.innerHTML = '';
+            renderCartGrid(cart, cartGrid);
+          }
+        } else {
+          alert(cart.error);
+        }
+      }
+    } else {
+      //update stock in product list
+      divRow.querySelector('.stock').innerHTML = product.quantity;
+      alert(`Product ${product.name} is out of stock.`);
+    }
+  }
+}
+
+function renderCartGrid(cart, cartGrid) {
+  const rowHead = document.createElement('div');
+  rowHead.classList = 'row';
+  rowHead.innerHTML = `
+    <div class="head cell">Name</div>
+    <div class="head cell">Price</div>
+    <div class="head cell">Total</div>
+    <div class="head cell">Quantity</div>
+  `;
+  cartGrid.appendChild(rowHead);
+  let total = 0;
+  cart.items.forEach(item => {
+    const row = document.createElement('div');
+    row.classList = 'row';
+    row.id = 'itemid-' + item.id;
+    row.dataset.id = item.id;
+
+    const divName = document.createElement('div');
+    divName.classList = 'cell itemName';
+    divName.innerHTML = item.name;
+    row.appendChild(divName);
+
+    const divPrice = document.createElement('div');
+    divPrice.classList = 'cell number unitPrice';
+    divPrice.innerHTML = item.price;
+    row.appendChild(divPrice);
+
+    const divTotal = document.createElement('div');
+    divTotal.classList = 'cell number totalPrice';
+    const totalProductPrice = parseFloat(item.price) * parseInt(item.quantity);
+    divTotal.innerHTML = totalProductPrice;
+    total += totalProductPrice;
+    row.appendChild(divTotal);
+
+    const divQtt = document.createElement('div');
+    divQtt.classList = 'cell center';
+    const spanMinus = document.createElement('span');
+    spanMinus.title = 'Decrease';
+    
+    spanMinus.addEventListener('click', function (evt) {
+      decreaseCartItemQtt(evt);
+    });
+
+    spanMinus.innerHTML = '- ';
+    divQtt.appendChild(spanMinus);
+
+    const inputMin = document.createElement('input');
+    inputMin.type = 'number';
+    inputMin.min = 0;
+    inputMin.classList = 'qtt';
+    const linkedProd = document.querySelector(`#pid-${item.id}`);
+    const prodStock = linkedProd.querySelector('.stock').innerHTML;
+    inputMin.max = prodStock;
+    inputMin.value = item.quantity;
+    divQtt.appendChild(inputMin);
+
+    const spanPlus = document.createElement('span');
+    spanPlus.title = 'Increase';
+    
+    spanPlus.addEventListener('click', function (evt) {
+      increaseCartItemQtt(evt);
+    });
+
+    spanPlus.innerHTML = ' +';
+    divQtt.appendChild(spanPlus);
+    row.appendChild(divQtt);
+
+    cartGrid.appendChild(row);
+  });
+
+  const rowTotal = document.createElement('div');
+  rowTotal.classList = 'row';
+  rowTotal.innerHTML = `
+    <div class="cell-total"></div>
+    <div class="cell-total"></div>
+    <div class="cell-total"></div>
+    <div class="cell-total center">Total: &nbsp;<span id="total">${total.toFixed(2)}</span></div>
+  `;
+  cartGrid.appendChild(rowTotal);
+  return cartGrid;
+}
+
+function renderCartControl() {
+  const ctrlDiv = document.createElement('div');
+  ctrlDiv.classList = 'control';
+
+  const orderBtnDiv = document.createElement('div');
+  orderBtnDiv.classList = 'btn';
+
+  const orderBtn = document.createElement('button');
+  orderBtn.classList = 'button';
+  orderBtn.innerHTML = 'Place order';
+
+  orderBtn.addEventListener('click', function (evt) {
+    placeOrder(evt);
+  });
+  
+  orderBtnDiv.appendChild(orderBtn);
+  ctrlDiv.appendChild(orderBtnDiv);
+  return ctrlDiv;
+}
+
+async function placeOrder(evt) {
+  //get cart
+  const accessToken = sessionStorage.getItem('accessToken');
+  const uId = accessToken.split('$')[1];
+  const cart = await fetch(`${host}/user/${uId}/cart`, {
+    method: 'GET',
+    headers: headersGeneration()
+  }).then(res => res.json());
+  if (cart && !cart.error) {
+    const order = await fetch(`${host}/orders/user/${uId}`, {
+      method: 'POST',
+      headers: headersGeneration(),
+      body: JSON.stringify(cart.items)
+    }).then(res => res.json());
+    if (order && order.error) {
+      alert(order.error);
+    } else {
+      alert(`The order has already placed!`);
+      //update product list YEN
+      renderProducts();
+      renderUserCart();
+    }
+  } else {
+    alert(cart.err);
+  }
+}
 
 function authorizedChecking() {
-  fetch(`${host}/users/authorization`, {
+  if (sessionStorage.getItem('accessToken')) {
+    fetch(`${host}/users/authorization`, {
     method: 'GET',
     cache: 'no-cache',
     headers: headersGeneration()
@@ -322,7 +507,16 @@ function authorizedChecking() {
         renderProducts();
         renderUserCart();
       }
+    }).catch(err => {
+      console.log(err);
     });
+  } else {
+    //YEN show
+    document.getElementById('loginForm').classList = 'login';
+    document.getElementById('welcome').classList = 'login hide';
+    //show blank body
+    renderWelcomeStore();
+  }
 }
 function renderWelcomeStore() {
   const welcome = document.getElementById('welcome-store');

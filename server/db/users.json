@@ -10,4 +10,10 @@
     "password": "abcd",
     "lastLogin": "",
     "token": ""
+}, {
+  "id": 3,
+  "username": "user3",
+  "password": "3333",
+  "lastLogin": "",
+  "token": ""
 }]

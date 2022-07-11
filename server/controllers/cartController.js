@@ -11,10 +11,18 @@ exports.getCart = (req, res) => {
 }
 
 exports.updateCart = (req, res) => {
-  const cart = req.body;
-  res.status(200).json(Cart.update(req.params.uId, cart.items));
+  const items = req.body;
+  res.status(200).json(Cart.update(req.params.uId, items));
 }
 
 exports.clearCart = (req, res) => {
   res.status(200).json(Cart.clear(req.params.uId));
+}
+
+exports.addItemCart = (req, res) => {
+  res.status(200).json(Cart.addItem(req.params.uId, req.body));
+}
+
+exports.subtractItemCart = (req, res) => {
+  res.status(200).json(Cart.subtractItem(req.params.uId, req.body));
 }

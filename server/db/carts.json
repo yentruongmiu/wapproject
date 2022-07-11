@@ -1,6 +1,6 @@
 [
   {
-    "userId": "1", 
+    "userId": 1, 
     "items": [{
       "id": 1,
       "name": "Node.js",
@@ -15,20 +15,8 @@
       "quantity": 1
     }]
   }, {
-    "userId": "2",
-    "items": [{
-      "id": 2,
-      "name": "React",
-      "price": 19.99,
-      "image": "reactjs.png",
-      "quantity": 1
-    }, {
-      "id": 3,
-      "name": "Angular",
-      "price": 29.99,
-      "image": "angular.png",
-      "quantity": 1
-    }]
+    "userId": 2,
+    "items": []
   }
 ]
   
